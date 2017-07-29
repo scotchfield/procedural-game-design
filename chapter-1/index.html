@@ -1,0 +1,57 @@
+<html>
+  <head id="head">
+    <title>Twitter Game</title>
+  </head>
+  <body>
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript">
+
+$(function () {
+  var username = 'scotchfield';
+  var url = 'https://twitter.com/' + username;
+
+  // We have to bypass CORS to load the data, pass through
+  // this lovely website ❤️
+  url = 'https://crossorigin.me/' + url;
+
+  fetch(url).then(function(response) {
+    return response.text();
+  }).then(function (data) {
+    // We're retrieving the HTML data. Store it in a new element
+    // that doesn't show up in browser, and use jQuery to identify
+    // the profile image and the tweets.
+    var el = $(data);
+    var img = el.find('img.ProfileAvatar-image')[0].src;
+    var tweets = el.find('p.tweet-text')
+      .map(function () { return $(this).text(); })
+      .get();
+
+    game.initGame(img, tweets);
+    game.update();
+  });
+});
+
+// We can make a game with this! Store some data in a closure.
+var game = (function () {
+  var img, tweets;
+
+  return {
+    initGame: function(i, t) {
+      img = i;
+      tweets = t;
+    },
+    update: function () {
+      console.log('update');
+      console.log(img);
+      console.log(tweets);
+    },
+  }
+})();
+
+</script>
+
+<div id="app">Loading..</div>
+
+  </body>
+</html>
