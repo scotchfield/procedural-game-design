@@ -1,3 +1,18 @@
+<!--
+
+Procedural Generation in Game Design
+Chapter 1
+
+Darren Grey: "What would a game based on the player's Twitter account and
+followers look like?"
+
+Twitter doesn't make it easy to get information without an API key. To make
+this example more accessible, we can make a request using a public service
+that ignores the Cross-Origin server response from Twitter. However, we can't
+get the followers list that way. Darn!
+
+-->
+
 <html>
   <head id="head">
     <title>Twitter Game</title>
@@ -9,13 +24,13 @@
 
 $(function () {
   var username = 'scotchfield';
-  var url = 'https://twitter.com/' + username;
+  var urlTweets = 'https://twitter.com/' + username;
 
   // We have to bypass CORS to load the data, pass through
   // this lovely website ❤️
-  url = 'https://crossorigin.me/' + url;
+  urlTweets = 'https://crossorigin.me/' + urlTweets;
 
-  fetch(url).then(function(response) {
+  fetch(urlTweets).then(function(response) {
     return response.text();
   }).then(function (data) {
     // We're retrieving the HTML data. Store it in a new element
@@ -27,19 +42,20 @@ $(function () {
       .map(function () { return $(this).text(); })
       .get();
 
-    game.initGame(img, tweets);
+    game.init({img: img, tweets: tweets});
     game.update();
   });
+
 });
 
 // We can make a game with this! Store some data in a closure.
 var game = (function () {
-  var img, tweets;
+  var img = '', tweets = [];
 
   return {
-    initGame: function(i, t) {
-      img = i;
-      tweets = t;
+    init: function(obj) {
+      img = obj.img || img;
+      tweets = obj.tweets || tweets;
     },
     update: function () {
       console.log('update');
