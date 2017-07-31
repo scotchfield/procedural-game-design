@@ -63,6 +63,12 @@ span.legendary { color: #FF851B; }
     <input type="radio" name="constraints" value="3">
     Randomize the level and modify attributes
   </p>
+
+  <p>
+    <input type="radio" name="constraints" value="4">
+    Add some random attributes and change the artifact quality
+  </p>
+
 </div>
 
 <button onclick="generateItem()">Generate</button>
@@ -112,6 +118,23 @@ var adjectives = [
   "luxurious",
 ];
 
+var attributes = [
+  'Strength', 'Dexterity', 'Intelligence', 'Wisdom',
+  'Constitution', 'Charisma', 'Appearance', 'Power',
+  'Size', 'Sanity', 'Education', 'Idea', 'Luck', 'Knowledge',
+  'Versatility', 'Gumption', 'Savvy', 'Tastiness', 'Verisimilitude',
+  'Green Ranger', 'Art', 'Coffee', 'Aesthetics', 'Body', 'Might',
+  'Brawn', 'Endurance', 'Vitality', 'Agility', 'Reflexes',
+  'Speed', 'Intellect', 'Brains', 'Z-Factor', 'Knowledge',
+  'Charm', 'Anti-Charm', 'Stench', 'Social', 'Psychic', 'Wits',
+  'Ego', 'Id', 'Super-Ego', 'Cautiousness', 'Fate', 'Luck',
+  'Chance', 'Gambling', 'Handwriting', 'Ambidexterity',
+  'Volume', 'Social Media', 'Animal Magnetism', 'Fresh Breath',
+  'Flexibility', 'Woe', 'Antifragility', 'Thickness', 'Static',
+  'Page Count', 'Brightness', 'Shadow', 'Resolution', 'Hair',
+  'Viscosity', 'Upbringing', 'Definition', 'Cubism', 'Comfort',
+];
+
 function choose(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
@@ -141,6 +164,27 @@ function generateItem() {
     document.querySelector('input[name="constraints"]:checked').value
   );
 
+
+  if (constraints >= 4) {
+    var n = 3, quality = randomInt(1, 5);
+    if (quality === 1) {
+      item.rarity = 'common';
+    } else if (quality === 2) {
+      item.rarity = 'uncommon'; n += 3;
+    } else if (quality === 3) {
+      item.rarity = 'rare'; n += 6;
+    } else if (quality === 4) {
+      item.rarity = 'epic'; n += 9;
+    } else if (quality === 5) {
+      item.rarity = 'legendary'; n += 12;
+    }
+
+    item.attributes = [];
+    for (var i = 0; i < n; i += 1) {
+      var key = choose(attributes);
+      item.attributes[key] = item.attributes[key] ? item.attributes[key] + 1 : 1;
+    }
+  }
 
   if (constraints >= 3) {
     item.level = randomInt(1, 20);
