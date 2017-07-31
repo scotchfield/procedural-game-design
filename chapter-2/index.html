@@ -1,3 +1,35 @@
+<!--
+
+Procedural Generation in Game Design
+Chapter 2
+
+Kenny Backus: "An excellent starting point for when you don't know what you
+want to create is to figure out what you _don't_ want to create. You almost
+always will need to introduce _constraints_ to your generator that provide
+_guarantees_ for the sort of content it can or cannot create."
+
+Role-playing game items are a great use-case for procedural generation. The
+variation between the set of swords or the set of armoured boots needs to be
+diverse enough to give players some interest, while still falling in-line with
+the game's world and design. Procedural generation with constraints allows a
+designer to think carefully about how each attribute of an item affects value,
+what qualititative descriptors are interesting, and over hundreds or thousands
+of automatically-generated examples, how those assumptions actually hold up.
+
+I spent a lot of time designing areas for my old web-based RPG called Twelve
+Sands (https://github.com/scotchfield/twelvesands). This included a lot of
+templates for how I'd manually create weapons, armour, enemies, enchantments,
+etc. etc. You can see examples of this in the database, such as
+https://github.com/scotchfield/twelvesands/blob/master/db/data.sql#L633 or
+any of the adjacent rows. Gaaaah.
+
+In this example, there are a few constraints of increasing scope. At the top,
+we just change the name and keep everything else the same. As we decrease in
+the list, we try to vary the armour in more interesting ways. You can take
+this as far as you want, and can have a lot of fun in the process. :)
+
+-->
+
 <html>
   <head>
     <title>Procedural Generation Constraints</title>
