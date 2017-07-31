@@ -26,6 +26,11 @@ span.legendary { color: #FF851B; }
     <input type="radio" name="constraints" value="2">
     Change the name and kind of armour
   </p>
+
+  <p>
+    <input type="radio" name="constraints" value="3">
+    Randomize the level and modify attributes
+  </p>
 </div>
 
 <button onclick="generateItem()">Generate</button>
@@ -83,6 +88,10 @@ function capitalize(s) {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
+function randomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 function generateItem() {
   var item = {
     'name': '',
@@ -100,6 +109,13 @@ function generateItem() {
     document.querySelector('input[name="constraints"]:checked').value
   );
 
+
+  if (constraints >= 3) {
+    item.level = randomInt(1, 20);
+    for (var i = 1; i < item.level; i += 1) {
+      item.attributes[choose(Object.keys(item.attributes))] += 1;
+    }
+  }
 
   if (constraints >= 2) {
     item.kind = choose([
