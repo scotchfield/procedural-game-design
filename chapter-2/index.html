@@ -1,0 +1,138 @@
+<html>
+  <head>
+    <title>Procedural Generation Constraints</title>
+<style type="text/css">
+body {
+  background-color: black;
+  color: white;
+  text-align: center;
+}
+span.common { color: #01FF70; }
+span.uncommon { color: #7FDBFF; }
+span.rare { color: #0074D9; }
+span.epic { color: #F012BE; }
+span.legendary { color: #FF851B; }
+</style>
+  </head>
+  <body>
+
+<div>
+  <p>
+    <input type="radio" name="constraints" value="1" checked>
+    Only change the name (tightest constraints)
+  </p>
+
+  <p>
+    <input type="radio" name="constraints" value="2">
+    Change the name and kind of armour
+  </p>
+</div>
+
+<button onclick="generateItem()">Generate</button>
+
+<p><strong>Your Armour</strong></p>
+<div id="item"></div>
+
+
+<script type="text/javascript">
+
+var adjectives = [
+  "lacklustre",
+  "laden",
+  "lagging",
+  "lamented",
+  "laughable",
+  "layered",
+  "leather",
+  "leathern",
+  "leery",
+  "left-footed",
+  "legible",
+  "leisure",
+  "lessening",
+  "liberating",
+  "life-size",
+  "lifted",
+  "lightest",
+  "limitless",
+  "listening",
+  "literary",
+  "liver",
+  "livid",
+  "lobster",
+  "locked",
+  "long-held",
+  "long-lasting",
+  "long-running",
+  "long-suffering",
+  "loudest",
+  "loveliest",
+  "low-budget",
+  "low-carb",
+  "lowering",
+  "lucid",
+  "luckless",
+  "luxurious",
+];
+
+function choose(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function capitalize(s) {
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+function generateItem() {
+  var item = {
+    'name': '',
+    'kind': 'Helmet',
+    'level': 1,
+    'attributes': {
+      'Strength': 1,
+      'Dexterity': 1,
+      'Intelligence': 1,
+    },
+    'description': 'An iron helmet',
+    'rarity': 'common',
+  };
+  var constraints = parseInt(
+    document.querySelector('input[name="constraints"]:checked').value
+  );
+
+
+  if (constraints >= 2) {
+    item.kind = choose([
+      'Boots',
+      'Chestplate',
+      'Helmet',
+      'Leggings',
+      'Shield',
+      'Shoulders',
+    ]);
+  }
+
+  if (constraints >= 1) {
+    item.adjective = choose(adjectives);
+    item.name = capitalize(item.adjective) + ' ' + item.kind;
+    item.description = 'As far as armour goes, it\'s kind of ' +
+      item.adjective + '.';
+  }
+
+  var description = '<h1>' + item.name + '</h1>' +
+    '<p><i>Level ' + item.level + '</i><br />' +
+    '<span class="' + item.rarity + '">' +
+    capitalize(item.rarity) + ' Quality</span><br /><br />' +
+    Object.keys(item.attributes)
+      .map(function (key) { return key + ': ' + item.attributes[key]; })
+      .join('<br />') +
+    '</p><p>' + item.description + '</p>';
+  document.getElementById('item').innerHTML = description;
+}
+
+generateItem();
+
+</script>
+
+  </body>
+</html>
