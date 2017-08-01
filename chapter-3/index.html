@@ -1,0 +1,228 @@
+<!--
+
+Procedural Generation in Game Design
+Chapter 3
+
+Liam Welton: "We decided on a grid-and-tile-basd approach toward map
+generation."
+
+I love Sunless Sea. I love Fallen Londen. I love what this team is doing.
+This grouped tile approach concedes an important consideration in
+procedural generation, that in many cases a human-designed group is more
+satisfying than a purely random one. Setting up a world as a collection of
+1x1 grid points will provide a lot of variety, but relatively little
+similarity between adjacent points.
+
+In this example, the zone blocks are filled using arrays of content. The
+generator moves from top-left to bottom-right row-by-row, and when it hits a
+zone id in the tiles array, it picks the next element in the choice the
+generator made for that zone. For example, there are two example possibilities
+for zone 1 in the allZones dictionary. We start by choosing one of them (say,
+the peaceful set), and each time we hit a zone 1 tile while iterating, we
+take the left-most array element and drop it in to our generated content.
+This means that in zone 7, a sort of rotated long tetris L block, the first
+element in the sample content array is in the fourth row in the fifth position,
+and the next four elements are all in the fifth row from the second to fifth
+columns.
+
+This is a simple set of content fit to the 6x6 grid given in Chapter 3.
+I don't think the colour gradient is quite the same as Sunless Sea, but it
+sure does look pretty here. :)
+
+-->
+
+<html>
+  <head>
+    <title>Procedural Zone Generation</title>
+
+<style type="text/css">
+div.row {
+  display: table;
+  clear: both;
+  height: 100px;
+  text-align: center;
+}
+div.tile {
+  display: table-cell;
+  vertical-align: middle;
+  width: 100;
+}
+.zone-1 { background-color: #4568dc; }
+.zone-2 { background-color: #5b68d4; }
+.zone-3 { background-color: #6c69cd; }
+.zone-4 { background-color: #7d69c7; }
+.zone-5 { background-color: #8969c2; }
+.zone-6 { background-color: #a06ab9; }
+.zone-7 { background-color: #b06aB3; }
+</style>
+
+  </head>
+  <body>
+
+<p><button onclick="generate()">Generate</button></p>
+
+<div id="grid"></div>
+
+<script type="text/javascript">
+
+var tiles = [
+  [1, 2, 2, 2, 2, 3],
+  [1, 4, 4, 5, 5, 6],
+  [1, 4, 4, 5, 5, 6],
+  [1, 4, 4, 5, 7, 6],
+  [1, 7, 7, 7, 7, 6],
+  [1, 1, 1, 1, 1, 1],
+];
+
+var allZones = {
+  1: [
+    [
+      'Peaceful Corner',
+      'Peaceful Plains',
+      'Peaceful City 1',
+      'Peaceful Plains',
+      'Peaceful City 2',
+      'Peaceful Corner',
+      'Peaceful Forest',
+      'Peaceful City 3',
+      'Peaceful Plains',
+      'Peaceful Forest',
+      'Peaceful Corner',
+    ],
+    [
+      'Kinda Peaceful Corner',
+      'Kinda Peaceful Plains',
+      'Kinda Peaceful City 1',
+      'Kinda Peaceful Plains',
+      'Kinda Peaceful City 2',
+      'Kinda Peaceful Corner',
+      'Kinda Peaceful Forest',
+      'Kinda Peaceful City 3',
+      'Kinda Peaceful Plains',
+      'Kinda Peaceful Forest',
+      'Kinda Peaceful Corner',
+    ],
+  ],
+  2: [
+    [
+      'Arid Top Edge',
+      'Arid Top City',
+      'Arid Top Edge',
+      'Arid Top Statue',
+    ],
+    [
+      'Desert Top Edge',
+      'Desert Top Edge',
+      'Desert Top City',
+      'Desert Top Edge',
+    ],
+  ],
+  3: [
+    ['Surprising Statue'],
+    ['Evil Demon'],
+    ['That Bad Cat'],
+    ['Ice Cream Paradise'],
+    ['Haunted Vegetables'],
+  ],
+  4: [
+    [
+      'Unnerving Island',
+      'Unnerving Squids',
+      'Unnerving Torrents',
+      'Unnerving Rapids',
+      'Unnerving Shark',
+      'Unnerving Island',
+    ],
+    [
+      'Calm Waves',
+      'Calm Island',
+      'Calm Submarine',
+      'Calm Pirate Ship',
+      'Calm Moonlight',
+      'Calm Supply Boat',
+    ],
+  ],
+  5: [
+    [
+      'Yawning Chasm',
+      'Yawning Zombie',
+      'A Big Island',
+      'Interesting Island Edge',
+      'Bottom of a Big Island',
+    ],
+    [
+      'Factory Pollution',
+      'Plastic Island Wreck',
+      'Disgusting Factory',
+      'Factory Pollution',
+      'Factory Pollution',
+    ],
+  ],
+  6: [
+    [
+      'Far Edge City',
+      'Far Edge Forest',
+      'Far Edge Zombie Forest',
+      'Far Edge Forest',
+    ],
+    [
+      'Far Edge Hairdresser',
+      'Far Edge Mall',
+      'Far Edge Restaurant',
+      'Far Edge Swimming Pool',
+    ],
+  ],
+  7: [
+    [
+      'Abandoned Ghost Ship',
+      'Abandoned Island',
+      'Scary Waves Ahh!',
+      'Eyes Under the Water',
+      'Spooky Ghosts',
+    ],
+    [
+      'Water Zombies',
+      'Water Zombie Island',
+      'Water Zombies',
+      'Water Zombies',
+      'Water Zombies',
+    ],
+  ],
+}
+
+function choose(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function generate() {
+  var el = document.getElementById('grid');
+  var choices = {};
+
+  Object.keys(allZones).forEach(function (key) {
+    choices[key] = choose(allZones[key]);
+  });
+
+  var html = '';
+  tiles.forEach(function (row, j) {
+    html += '<div class="row">';
+
+    row.forEach(function (tile, i) {
+      var zone = tiles[j][i];
+      var content = choices[zone][0];
+      choices[zone] = choices[zone].slice(1);
+
+      html += '<div class="tile zone-' + zone + '">' + content + '</div>';
+    });
+
+    html += '</div>';
+  })
+
+  el.innerHTML = html;
+}
+
+generate();
+
+</script>
+
+  </body>
+</html>
