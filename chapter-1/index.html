@@ -11,19 +11,40 @@ this example more accessible, we can make a request using a public service
 that ignores the Cross-Origin server response from Twitter. However, we can't
 get the followers list that way. Darn!
 
+This is a simple game that accepts a username, pulls the profile image and
+the list of most recent public tweets, then generates a question and three
+answers. The question is: Given the first four words of this user's tweet,
+can you guess the next word? The right word, along with two other random
+words from the public tweets, are provided below. Clicking on one of the words
+will either highlight it in green for a correct answer or in red for an
+incorrect answer.
+
 -->
 
 <html>
   <head id="head">
     <title>Twitter Game</title>
+
+<style type="text/css">
+.clickable { cursor: pointer; }
+.correct { background-color: green; }
+.incorrect { background-color: red; }
+</style>
+
   </head>
   <body>
 
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 <script type="text/javascript">
 
-$(function () {
-  var username = 'scotchfield';
+function generate() {
+  var username = document.getElementById('username').value;
+
+  if (!username.length) {
+    alert('Please type in a username!');
+    return;
+  }
+
   var urlTweets = 'https://twitter.com/' + username;
 
   // We have to bypass CORS to load the data, pass through
@@ -42,32 +63,56 @@ $(function () {
       .map(function () { return $(this).text(); })
       .get();
 
-    game.init({img: img, tweets: tweets});
-    game.update();
+    init({img: img, tweets: tweets});
+    update();
   });
 
-});
+};
 
-// We can make a game with this! Store some data in a closure.
-var game = (function () {
-  var img = '', tweets = [];
+function choose(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
 
-  return {
-    init: function(obj) {
-      img = obj.img || img;
-      tweets = obj.tweets || tweets;
-    },
-    update: function () {
-      console.log('update');
-      console.log(img);
-      console.log(tweets);
-    },
-  }
-})();
+var img = '', tweets = [], words = [];
+
+function init(obj) {
+  img = obj.img || img;
+  tweets = obj.tweets || tweets;
+  words = tweets.join(' ').split(' ');
+};
+
+function update() {
+  var el = document.getElementById('app');
+  var html = '<p><img src="' + img + '"></p>' +
+    '<h1>What comes next?</h1>';
+
+  var tweet = choose(tweets).split(' ');
+  html += '<h2>' + tweet.slice(0, 4).join(' ') + '</h2>';
+
+  var choices = [
+    [tweet[4], 'correct'],
+    [choose(words), 'incorrect'],
+    [choose(words), 'incorrect'],
+  ];
+  choices.sort();
+
+  choices.forEach(function (choice, i) {
+    html += '<p id="choice-' + i +
+      '" onclick="document.getElementById(\'choice-' + i + '\').className=\'' +
+      choice[1] + '\'" class="clickable">' + choice[0] + '</p>';
+  })
+
+  el.innerHTML = html;
+};
 
 </script>
 
-<div id="app">Loading..</div>
+<p>
+  <input type="text" id="username" placeholder="scotchfield" />
+  <button onclick="generate()">Generate</button>
+</p>
+
+<div id="app"></div>
 
   </body>
 </html>
